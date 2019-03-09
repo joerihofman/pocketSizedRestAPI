@@ -78,6 +78,12 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.arangodb</groupId>
+            <artifactId>arangodb-java-driver</artifactId>
+            <version>5.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>
