@@ -23,6 +23,7 @@ class Server {
     val cssFontAwesomeFile = Server::class.java.classLoader.getResource("assets/css/font-awesome.min.css").file
 
     val jquery = Server::class.java.classLoader.getResource("assets/js/jquery-3.3.1.min.js").file
+    val jqueryDevelop = Server::class.java.classLoader.getResource("assets/js/jquery-3.3.1.js").file
     val javaScript = Server::class.java.classLoader.getResource("assets/js/main.js").file
 
     val server = embeddedServer(Netty, 8088) {
@@ -30,7 +31,7 @@ class Server {
             post("/make-database") { call.respondText{ arango.makeDatabase() } }
             post("/make-collection") { call.respondText { arango.makeCollection() } }
             post("/make-document") { call.respondText { arango.makeDocument(call.receiveParameters()) } }
-            get("/get-document") { call.respondText { arango.getDocument(call.receiveParameters()) } }
+            get("/get-document") { call.respondText { arango.getDocument(call.request.queryParameters) } }
 
             get("") { call.respondHtmlTemplate(Index()) { } }
             get("/helloworld") { call.respondText { "HELLO WORLD!" } }
@@ -39,6 +40,7 @@ class Server {
             get("/css/font-awesome.min.css") { call.respondFile(File(cssFontAwesomeFile)) } //zelfde naam als bestand
             get("/js/main") { call.respondFile(File(javaScript)) }
             get("/js/jquery") { call.respondFile(File(jquery)) }
+            get("/js/jquery-develop") { call.respondFile(File(jqueryDevelop)) }
         }
     }
 

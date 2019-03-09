@@ -12,7 +12,7 @@ class MainTemplate: Template<HTML> {
     override fun HTML.apply() {
         head {
             link(rel = "stylesheet", href = "css/main", type = "text/css") //href: http://localhost:8088/css/main
-            script { type = "text/javascript"; src = "js/jquery" }
+            script { type = "text/javascript"; src = "js/jquery-develop" }
             insert(header)
         }
         body {
