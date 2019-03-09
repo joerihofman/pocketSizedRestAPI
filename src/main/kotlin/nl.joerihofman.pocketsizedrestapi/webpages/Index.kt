@@ -7,22 +7,29 @@ import kotlinx.html.*
 
 class Index(val mainTemplate: MainTemplate = MainTemplate()): Template<HTML> {
 
+
     override fun HTML.apply() {
         insert(mainTemplate) {
             header {
                 title("INDEX")
-
             }
             content {
                 script {
-                    + "function myFun() { document.getElementById('button').innerHTML = 'YOU CLICKED ME!' ;}"
+                    src = "js/main"
                 }
                 div("main") {
                     h1 { +"Hello World!" }
                     br
                     button(type = ButtonType.button) {
                         id = "button"
-                        onClick = "myFun()"
+                        onClick = "changeButton()"
+                        + "TEST"
+                    }
+                    br
+                    br
+                    button(type = ButtonType.button) {
+                        id = "button2"
+                        onClick = "log()"
                         + "TEST"
                     }
                 }

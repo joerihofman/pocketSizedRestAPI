@@ -3,6 +3,8 @@ package nl.joerihofman.pocketsizedrestapi.database
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDBException
 import com.arangodb.entity.BaseDocument
+import org.json.JSONException
+import org.json.JSONObject
 import org.slf4j.LoggerFactory
 
 class Arango {
@@ -29,7 +31,6 @@ class Arango {
             logger.error(dbNotMade, e)
             return dbNotMade
         }
-
     }
 
     fun makeCollection(): String {
@@ -62,13 +63,19 @@ class Arango {
         }
     }
 
-    fun getDocument() {
+    fun getDocument(): String {
+        var answer = "null"
+
         try {
-            val document = arangoDB.db(databaseName).collection(collectieName).getDocument(keyInt.toString(), BaseDocument::class.java)
-            logger.info("KEY : ${document.key}")
-            logger.info("VAL : ${document.getAttribute("naam")}")
+            val document =  arangoDB.db(databaseName).collection(collectieName).getDocument(keyInt.toString(), BaseDocument::class.java)
+            answer = JSONObject(document.properties).toString()
+            logger.info(answer)
         } catch (e: ArangoDBException) {
             logger.error("Document niet gevonden", e)
+        } catch (e: JSONException) {
+            logger.error("Document kan niet worden omgezet in json ", e)
         }
+
+        return answer
     }
 }
