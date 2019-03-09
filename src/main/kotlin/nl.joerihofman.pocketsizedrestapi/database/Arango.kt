@@ -3,6 +3,7 @@ package nl.joerihofman.pocketsizedrestapi.database
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDBException
 import com.arangodb.entity.BaseDocument
+import io.ktor.http.Parameters
 import org.json.JSONException
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
@@ -13,11 +14,11 @@ class Arango {
 
     private val arangoDB = ArangoDB.Builder().host("localhost", 8529).build()
     private val databaseName = "test_database"
-    private val collectieName = "test_collection"
+    private val collectionName = "test_collection"
+    private val collection = arangoDB.db(databaseName).collection(collectionName)
 
     private val nameArray = arrayListOf("Joeri", "Nynke", "Koen", "Jan", "Maurits")
 
-    private var keyInt = 0
 
     fun makeDatabase(): String {
 
@@ -36,38 +37,36 @@ class Arango {
     fun makeCollection(): String {
 
         try {
-            arangoDB.db(databaseName).createCollection(collectieName)
-            val collMade = "Collectie: $collectieName is gemaakt!"
+            arangoDB.db(databaseName).createCollection(collectionName)
+            val collMade = "Collectie: $collectionName is gemaakt!"
             logger.info(collMade)
             return collMade
         } catch (e: ArangoDBException) {
-            val collNotMade = "Collectie: $collectieName is NIET gemaakt"
+            val collNotMade = "Collectie: $collectionName is NIET gemaakt"
             logger.error(collNotMade, e)
             return collNotMade
         }
     }
 
-    fun makeDocument(): String {
+    fun makeDocument(parameters: Parameters): String {
 
-        try {
-            keyInt = keyInt.inc()
-            val document = BaseDocument()
-            document.key = keyInt.toString()
-            document.addAttribute("naam", nameArray.random())
-            arangoDB.db(databaseName).collection(collectieName).insertDocument(document)
-            logger.info("Er is een document gemaakt met key $keyInt")
-            return keyInt.toString()
-        } catch (e: ArangoDBException) {
-            logger.error("Document niet gemaakt", e)
-            return "-1"
-        }
+        val key = parameters.get("key")
+
+        println("KEY: $key")
+
+        val document = BaseDocument()
+        document.key = key
+        document.addAttribute("naam", nameArray.random())
+
+        return insertDocument(document)
     }
 
-    fun getDocument(): String {
+    fun getDocument(parameters: Parameters): String {
+        val key = parameters.get("key")
         var answer = "null"
 
         try {
-            val document =  arangoDB.db(databaseName).collection(collectieName).getDocument(keyInt.toString(), BaseDocument::class.java)
+            val document =  collection.getDocument(key, BaseDocument::class.java)
             answer = JSONObject(document.properties).toString()
             logger.info(answer)
         } catch (e: ArangoDBException) {
@@ -77,5 +76,17 @@ class Arango {
         }
 
         return answer
+    }
+
+    private fun insertDocument(document: BaseDocument): String {
+        var key = "null"
+        try {
+            collection.insertDocument(document)
+            key = document.key
+            logger.info("Er is een document gemaakt met key ${document.key}")
+        } catch (e: ArangoDBException) {
+            logger.error("Document niet gemaakt", e)
+        }
+        return key
     }
 }

@@ -2,6 +2,7 @@ package nl.joerihofman.pocketsizedrestapi.server
 
 import io.ktor.application.call
 import io.ktor.html.*
+import io.ktor.request.receiveParameters
 import io.ktor.response.respondFile
 import io.ktor.response.respondText
 import io.ktor.routing.get
@@ -28,8 +29,8 @@ class Server {
         routing {
             post("/make-database") { call.respondText{ arango.makeDatabase() } }
             post("/make-collection") { call.respondText { arango.makeCollection() } }
-            post("/make-document") { call.respondText { arango.makeDocument() } }
-            get("/get-document") { call.respondText { arango.getDocument() } }
+            post("/make-document") { call.respondText { arango.makeDocument(call.receiveParameters()) } }
+            get("/get-document") { call.respondText { arango.getDocument(call.receiveParameters()) } }
 
             get("") { call.respondHtmlTemplate(Index()) { } }
             get("/helloworld") { call.respondText { "HELLO WORLD!" } }

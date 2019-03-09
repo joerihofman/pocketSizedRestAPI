@@ -27,11 +27,7 @@ class Index(val mainTemplate: MainTemplate = MainTemplate()): Template<HTML> {
                     }
                     br
                     br
-                    button(type = ButtonType.button) {
-                        id = "button2"
-                        onClick = "log()"
-                        + "TEST"
-                    }
+                    div { id = "documentForm"; attributes["align"] = "center" }
                 }
             }
         }
