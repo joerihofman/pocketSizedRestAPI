@@ -67,7 +67,7 @@ class Arango {
 
         try {
             val document =  collection.getDocument(key, BaseDocument::class.java)
-            answer = JSONObject(document.properties).toString()
+            document?.let { answer = JSONObject(document.properties).toString() }
             logger.info(answer)
         } catch (e: ArangoDBException) {
             logger.error("Document niet gevonden", e)
