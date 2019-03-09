@@ -1,4 +1,4 @@
-package nl.joerihofman.pocketsizedrestapi.Database
+package nl.joerihofman.pocketsizedrestapi.database
 
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDBException

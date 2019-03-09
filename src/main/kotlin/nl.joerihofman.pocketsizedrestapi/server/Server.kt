@@ -1,13 +1,16 @@
-package nl.joerihofman.pocketsizedrestapi.Server
+package nl.joerihofman.pocketsizedrestapi.server
 
 import io.ktor.application.call
+import io.ktor.html.*
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import nl.joerihofman.pocketsizedrestapi.Database.Arango
+
+import nl.joerihofman.pocketsizedrestapi.database.Arango
+import nl.joerihofman.pocketsizedrestapi.webpages.Index
 
 class Server {
 
@@ -15,6 +18,7 @@ class Server {
 
     val server = embeddedServer(Netty, 8088) {
         routing {
+            get("") { call.respondHtmlTemplate(Index()) { } }
             get("/helloworld") { call.respondText { "HELLO WORLD!" } }
             post("/make-database") { call.respondText{ arango.makeDatabase() } }
             post("/make-collection") { call.respondText { arango.makeCollection() } }
@@ -28,4 +32,5 @@ class Server {
     }
 
 }
+
 

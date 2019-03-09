@@ -1,6 +1,6 @@
 package nl.joerihofman.pocketsizedrestapi
 
-import nl.joerihofman.pocketsizedrestapi.Server.Server
+import nl.joerihofman.pocketsizedrestapi.server.Server
 import org.slf4j.LoggerFactory
 
 fun main() {
