@@ -1,6 +1,5 @@
 package nl.joerihofman.pocketsizedrestapi.database
 
-import com.arangodb.ArangoDB
 import com.arangodb.ArangoDBException
 import com.arangodb.entity.BaseDocument
 import io.ktor.http.Parameters
@@ -12,18 +11,16 @@ class Arango {
 
     private val logger = LoggerFactory.getLogger(Arango::class.java)
 
-    private val arangoDB = ArangoDB.Builder().host("localhost", 8529).build()
     private val databaseName = "test_database"
     private val collectionName = "test_collection"
-    private val collection = arangoDB.db(databaseName).collection(collectionName)
+    private val arango = ArangoSettings(databaseName, collectionName)
 
     private val nameArray = arrayListOf("Joeri", "Nynke", "Koen", "Jan", "Maurits")
-
 
     fun makeDatabase(): String {
 
         try {
-            arangoDB.createDatabase(databaseName)
+            arango.arangoDB.createDatabase(databaseName)
             val dbMade = "Database: $databaseName is gemaakt!"
             logger.info(dbMade)
             return dbMade
@@ -37,7 +34,7 @@ class Arango {
     fun makeCollection(): String {
 
         try {
-            arangoDB.db(databaseName).createCollection(collectionName)
+            arango.arangoDB.db(databaseName).createCollection(collectionName)
             val collMade = "Collectie: $collectionName is gemaakt!"
             logger.info(collMade)
             return collMade
@@ -66,7 +63,7 @@ class Arango {
         var answer = "null"
 
         try {
-            val document =  collection.getDocument(key, BaseDocument::class.java)
+            val document =  arango.collection.getDocument(key, BaseDocument::class.java)
             document?.let { answer = JSONObject(document.properties).toString() }
             logger.info(answer)
         } catch (e: ArangoDBException) {
@@ -81,7 +78,7 @@ class Arango {
     private fun insertDocument(document: BaseDocument): String {
         var key = "null"
         try {
-            collection.insertDocument(document)
+            arango.collection.insertDocument(document)
             key = document.key
             logger.info("Er is een document gemaakt met key ${document.key}")
         } catch (e: ArangoDBException) {
@@ -89,4 +86,5 @@ class Arango {
         }
         return key
     }
+
 }
